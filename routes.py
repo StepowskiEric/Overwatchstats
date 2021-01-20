@@ -1,6 +1,7 @@
 from app import app
 from flask import Flask, request
 from flask import render_template
+from markupsafe import escape
 
 
 @app.route('/')
