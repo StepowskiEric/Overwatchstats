@@ -1,10 +1,15 @@
-from flask import render_template, redirect, url_for, flash, app, request
+import json
+
+from appdirs import unicode
+from flask import render_template, redirect, url_for, flash, app, request, jsonify, abort
+from flask_json import json_response
+from pipenv.vendor import requests
+
 from app.users import Users, Player
 from app import app, db
 from app.forms import RegisterForm, LoginForm, PlayerForm
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask_login import login_user, login_required, logout_user, current_user
-
 
 
 @app.route('/index')
@@ -15,24 +20,22 @@ def index():
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
-    form = LoginForm()
-    if form.validate_on_submit():
-        user = Users.query.filter_by(email=form.email.data).first()
-        if user is not None and user.check_password(form.password.data):
-            login_user(user, remember=form.remember.data)
-            return {'user': current_user.to_json()}, 200
+    data = json.loads(request.data)
+    email = data['email']
+
+    if Users.query.filter_by(email=email):
+        return json_response(status=200)
     else:
-        return '<h1> error <h1>'
-
-
+        return abort(400)
 
 
 @app.route('/register', methods=['GET', 'POST'])
 def register():
-    data = request.json()
-    if data.get('email') or data.get('password') is not None:
-        new_user = Users(name=data.get('name'), email=data.get('email'),
-                         password_hash=data.get('password'), num_of_players=data.get('numPlayers'))
+    data = json.loads(request.data)
+
+    if data['email'] or data['password'] is not None:
+        new_user = Users(name=data['name'], email=data['email'],
+                         password_hash=data['password'], num_of_players=data['numofplayers'])
         new_user.set_password(new_user.password_hash)
         db.session.add(new_user)
         db.session.commit()
