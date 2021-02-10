@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-giJF6kkoqNQ00vy+HMDP7azOuL0xtbfIcaT9wjKHr8RbDVddVHyTfAAsrekwKmP1" crossorigin="anonymous">
+    <title>Overwatch Match Recorder</title>
+    <nav class="nav nav-pills nav-fill">
+  <a class="nav-link active" aria-current="page" href="/dashboard">Dashboard</a>
+  <a class="nav-link"  href="/creatematch">Create Match</a>
+  <a class="Logout" href="/logout">Logout</a>
+</nav>
+    {% block content %}
+    {{ form.hidden_tag() }}
+    <h1> HELLO! {{form.email.data}}</h1>
+    {% endblock %}
+    <select class="form-select" aria-label="Default select example">
+  <option selected>Select the hero this player used this match</option>
+  <option value="1">Ana</option>
+  <option value="2">Ashe</option>
+  <option value="3">Baptise</option>
+        <option value="4">Bastion</option>
+  <option value="5">Brigitte</option>
+  <option value="6">D.va</option>
+        <option value="7">Doomfist</option>
+  <option value="8">Echo</option>
+  <option value="9">Genji</option>
+        <option value="10">Hanzo</option>
+  <option value="11">Junkrat</option>
+  <option value="12">Lucio</option>
+        <option value="13">Mccree</option>
+  <option value="14">Mei</option>
+        <option value="15">Mercy</option>
+  <option value="16">Moira</option>
+  <option value="17">Orisa</option>
+        <option value="18">Pharah</option>
+  <option value="19">Reaper</option>
+  <option value="20">Reinhardt</option>
+        <option value="21">Roadhog</option>
+  <option value="22">Sigma</option>
+        <option value="23">Soldier: 76</option>
+  <option value="24">Sombra</option>
+  <option value="25">Symmetra</option>
+        <option value="26">TORBJÖRN</option>
+  <option value="27">Tracer</option>
+  <option value="28">Widowmaker</option>
+        <option value="29">Winston</option>
+  <option value="30">Wrecking Ball</option>
+        <option value="31">Zarya</option>
+  <option value="32">Zenyatta</option>
+</select>
+</head>
+<body>
+
+</body>
+</html>
