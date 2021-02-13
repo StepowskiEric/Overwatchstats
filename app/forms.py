@@ -1,7 +1,7 @@
 from flask_wtf import FlaskForm
 from wtforms import BooleanField, StringField, PasswordField, SelectMultipleField, SelectField
 from wtforms.validators import InputRequired, Email, Length
-from app import users
+from app import models
 
 
 class RegisterForm(FlaskForm):
