@@ -28,6 +28,9 @@
       </map>
     </option>
   </component>
+  <component name="Git.Merge.Settings">
+    <option name="BRANCH" value="origin/main" />
+  </component>
   <component name="Git.Settings">
     <excluded-from-favorite>
       <branch-storage>
@@ -252,13 +255,13 @@
       <method v="2" />
     </configuration>
     <list>
-      <item itemvalue="Flask server.OverwatchMatchesFlaskRecorder" />
-      <item itemvalue="Flask server.Flask" />
-      <item itemvalue="Flask server.Flask (app/__init__.py:app)" />
-      <item itemvalue="Flask server.Flask (app/routes.py)" />
-      <item itemvalue="Python.python" />
       <item itemvalue="Python.Match" />
       <item itemvalue="Python.models" />
+      <item itemvalue="Python.python" />
+      <item itemvalue="Flask server.Flask (app/__init__.py:app)" />
+      <item itemvalue="Flask server.Flask (app/routes.py)" />
+      <item itemvalue="Flask server.Flask" />
+      <item itemvalue="Flask server.OverwatchMatchesFlaskRecorder" />
     </list>
     <recent_temporary>
       <list>
