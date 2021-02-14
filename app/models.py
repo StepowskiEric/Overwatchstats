@@ -2,7 +2,7 @@ import login as login
 from flask_login import UserMixin
 from werkzeug.security import generate_password_hash, check_password_hash
 from wtforms import ValidationError
-
+import datetime
 from app import db, jwt
 
 
@@ -12,7 +12,7 @@ class User(UserMixin, db.Model):
     name = db.Column(db.String(64), unique=True)
     email = db.Column(db.String(120), index=True, unique=True)
     password_hash = db.Column(db.String(128))
-    playersnames = db.relationship('Player', backref='user')
+    playersnames = db.relationship('Player')
 
     def __repr__(self):
         return '<User {}>'.format(self.name)
@@ -26,21 +26,20 @@ class User(UserMixin, db.Model):
     def set_player(self, players):
         return self.players
 
-
-
-
-
 class Match(db.Model):
     __tablename__ = 'matches'
     id = db.Column(db.Integer, primary_key=True)
     map = db.Column(db.String(70), index=True, unique=False)
     outcome = db.Column(db.String(30), index=True, unique=False)
-    # players = db.relationship('Player', lazy=True, backref=db.backref('playerName'))
+    match_contains_players = db.Column(db.String(), db.ForeignKey('players.playername'))
+    created_at = db.Column(db.DateTime, default=datetime.datetime.utcnow())
 
 
 class Player(db.Model):
     __tablename__ = 'players'
     id = db.Column(db.Integer, primary_key=True)
-    playername = db.Column(db.String(30))
+    playername = db.Column(db.String(30), unique=True, nullable=False)
+    role = db.Column(db.String(30))
+    heroes = db.Column(db.String(35))
     username = db.Column(db.String(64), db.ForeignKey('users.name'))
-    # player = db.relationship("User")
+    players_in_match = db.relationship("Match")

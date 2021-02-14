@@ -12,7 +12,7 @@ app = Flask(__name__)
 load_dotenv(verbose=True)
 
 app.config['SECRET_KEY'] = os.getenv("SECRET_KEY")
-app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://postgres:Thereem93@localhost/test2'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://postgres:Thereem93@localhost/new'
 app.config['JWT_SECRET_KEY'] = os.getenv("SECRET_JWT_KEY")
 jwt = JWTManager(app)
 app.config['JSON_ADD_STATUS'] = False

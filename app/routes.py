@@ -9,9 +9,8 @@ from flask_jwt_extended import (
     get_jwt_identity, current_user
 )
 
-from app.models import User, Player
+from app.models import User, Player, Match
 from app import app, db, jwt
-
 
 
 @app.route('/index')
@@ -30,7 +29,6 @@ def login():
     else:
         access_token = create_access_token(identity=user)
         return jsonify(access_token=access_token), 401
-
 
 
 @app.route('/register', methods=['POST'])
@@ -58,13 +56,23 @@ def register():
 @app.route('/player', methods=['GET', 'POST'])
 def player():
     if flask.request.method == 'POST':
-            data = json.loads(request.data)
-            user = User.query.filter_by(name=data['name']).first()
-            new_player = Player(playername=data['playername'], user=user.name)
-            #player_name = (data['playername'])
-            db.session.add(new_player)
-            db.session.commit()
-            return json_response(status=200, data=data)
+        data = json.loads(request.data)
+        user = User.query.filter_by(name=data['name']).first()
+        new_player = Player(playername=data['playername'], role=data['role'], heroes=data['heroes'], username=user.name)
+        # player_name = (data['playername'])
+        db.session.add(new_player)
+        db.session.commit()
+        return json_response(status=200, data=data)
+
+
+@app.route('/addmatch', methods=['POST'])
+def add_match():
+    data = json.loads(request.data)
+    new_match = Match(map=data['map'], outcome=data['outcome'], match_contains_players=data['players'])
+    db.session.add(new_match)
+    db.session.commit()
+    return json_response(status=200, data=data)
+
 
 
 @app.route("/who_am_i", methods=["GET"])
@@ -76,6 +84,7 @@ def protected():
         full_name=current_user.name,
         username=current_user.email,
     )
+
 
 @jwt.user_identity_loader
 def user_identity_lookup(user):
