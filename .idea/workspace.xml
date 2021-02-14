@@ -4,8 +4,25 @@
     <list default="true" id="da816542-7645-4d16-9e8f-f10f283aedd5" name="Default Changelist" comment="added all backend python">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/__init__.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/models.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/models.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/routes.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/routes.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/templates/creatematch.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/templates/dashboard.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/templates/index.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/templates/login.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/templates/main.css" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/templates/register.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/build/asset-manifest.json" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/build/asset-manifest.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/build/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/build/index.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/build/static/css/main.2ae47eeb.chunk.css" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/build/static/css/main.2ae47eeb.chunk.css" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/build/static/js/2.ac548bd1.chunk.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/build/static/js/2.ac548bd1.chunk.js.LICENSE.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/build/static/js/2.ac548bd1.chunk.js.map" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/build/static/js/3.55cd1f0f.chunk.js" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/build/static/js/3.55cd1f0f.chunk.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/build/static/js/main.251920b0.chunk.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/build/static/js/main.251920b0.chunk.js.map" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/build/static/js/runtime-main.57e14a5c.js" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/build/static/js/runtime-main.57e14a5c.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/package-lock.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/static/login.css" beforeDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -92,7 +109,7 @@
     <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
     <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
     <property name="WebServerToolWindowFactoryState" value="false" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/app/__init__.py" />
     <property name="list.type.of.created.stylesheet" value="CSS" />
     <property name="node.js.detected.package.eslint" value="true" />
     <property name="node.js.detected.package.tslint" value="true" />
@@ -100,7 +117,7 @@
     <property name="node.js.path.for.package.tslint" value="project" />
     <property name="node.js.selected.package.eslint" value="(autodetect)" />
     <property name="node.js.selected.package.tslint" value="(autodetect)" />
-    <property name="settings.editor.selected.configurable" value="vcs.Git" />
+    <property name="settings.editor.selected.configurable" value="com.jetbrains.python.configuration.PythonContentEntriesConfigurable" />
   </component>
   <component name="RecentsManager">
     <key name="MoveFile.RECENT_KEYS">
@@ -174,7 +191,7 @@
       <option name="INPUT_FILE" value="" />
       <method v="2" />
     </configuration>
-    <configuration name="Flask (app/__init__.py:app)" type="Python.FlaskServer" temporary="true" nameIsGenerated="true">
+    <configuration name="Flask (app/__init__.py:app)" type="Python.FlaskServer" nameIsGenerated="true">
       <option name="application" value="app" />
       <option name="flaskDebug" value="true" />
       <module name="OverwatchMatchesFlaskRecorder" />
@@ -206,7 +223,7 @@
       <option name="launchJavascriptDebuger" value="false" />
       <method v="2" />
     </configuration>
-    <configuration name="Flask" type="Python.FlaskServer" temporary="true" nameIsGenerated="true">
+    <configuration name="Flask" type="Python.FlaskServer" nameIsGenerated="true">
       <option name="application" value="app" />
       <module name="OverwatchMatchesFlaskRecorder" />
       <option name="target" value="$PROJECT_DIR$/routes.py" />
@@ -240,7 +257,7 @@
     <configuration name="OverwatchMatchesFlaskRecorder" type="Python.FlaskServer">
       <option name="flaskDebug" value="true" />
       <module name="OverwatchMatchesFlaskRecorder" />
-      <option name="target" value="$PROJECT_DIR$/app/__init__.py" />
+      <option name="target" value="C:\Users\Neo91\PycharmProjects\OverwatchMatchesFlaskRecorder\app\__init__.py" />
       <option name="targetType" value="PATH" />
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
@@ -248,9 +265,9 @@
         <env name="FLASK_APP" value="app.py" />
         <env name="FLASK_ENV" value="development" />
       </envs>
-      <option name="SDK_HOME" value="" />
+      <option name="SDK_HOME" value="C:\Users\Neo91\PycharmProjects\OverwatchMatchesFlaskRecorder\venv\Scripts\python.exe" />
       <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
-      <option name="IS_MODULE_SDK" value="true" />
+      <option name="IS_MODULE_SDK" value="false" />
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
       <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
@@ -281,8 +298,6 @@
         <item itemvalue="Python.models" />
         <item itemvalue="Python.Match" />
         <item itemvalue="Flask server.Flask (app/routes.py)" />
-        <item itemvalue="Flask server.Flask (app/__init__.py:app)" />
-        <item itemvalue="Flask server.Flask" />
       </list>
     </recent_temporary>
   </component>
@@ -316,6 +331,9 @@
       <workItem from="1613252276450" duration="953000" />
       <workItem from="1613253260933" duration="44000" />
       <workItem from="1613254164470" duration="64000" />
+      <workItem from="1613330341600" duration="28000" />
+      <workItem from="1613333653326" duration="446000" />
+      <workItem from="1613334178455" duration="7867000" />
     </task>
     <task id="LOCAL-00001" summary="added all backend python">
       <created>1611171345470</created>
@@ -365,7 +383,7 @@
     <SUITE FILE_PATH="coverage/OverwatchMatchesFlaskRecorder$Flask____init___py_app_.coverage" NAME="Flask (__init__.py:app) Coverage Results" MODIFIED="1611690946316" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/OverwatchMatchesFlaskRecorder$Match.coverage" NAME="Match Coverage Results" MODIFIED="1611686771085" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/OverwatchMatchesFlaskRecorder$users.coverage" NAME="users Coverage Results" MODIFIED="1611699621986" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/Models" />
-    <SUITE FILE_PATH="coverage/OverwatchMatchesFlaskRecorder$OverwatchMatchesFlaskRecorder.coverage" NAME="OverwatchMatchesFlaskRecorder Coverage Results" MODIFIED="1613324331465" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/OverwatchMatchesFlaskRecorder$OverwatchMatchesFlaskRecorder.coverage" NAME="OverwatchMatchesFlaskRecorder Coverage Results" MODIFIED="1613343283940" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/OverwatchMatchesFlaskRecorder$Flask__app_py_.coverage" NAME="Flask (app.py) Coverage Results" MODIFIED="1611689570823" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/OverwatchMatchesFlaskRecorder$python.coverage" NAME="python Coverage Results" MODIFIED="1611686588948" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/../../../../Python39" />
     <SUITE FILE_PATH="coverage/OverwatchMatchesFlaskRecorder$Flask__routes_py_.coverage" NAME="Flask (routes.py) Coverage Results" MODIFIED="1611687863743" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="" />

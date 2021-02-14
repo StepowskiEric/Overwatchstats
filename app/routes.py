@@ -1,8 +1,9 @@
 import datetime
 import json
+import os
 
 import flask
-from flask import render_template, request, jsonify
+from flask import render_template, request, jsonify, send_from_directory
 from flask_json import json_response
 from flask_jwt_extended import (
     JWTManager, jwt_required, create_access_token,
@@ -13,10 +14,16 @@ from app.models import User, Player, Match
 from app import app, db, jwt
 
 
+
 @app.route('/index')
-@app.route('/')
-def index():
-    return render_template('index.html')
+@app.route('/', defaults={'path': ''})
+@app.route('/<path:path>')
+def index(path):
+    if path != "" and os.path.exists(app.static_folder + '/' + path):
+        return send_from_directory(app.static_folder, path)
+    else:
+        return send_from_directory(app.static_folder, 'index.html')
+
 
 
 @app.route('/login', methods=['POST'])
