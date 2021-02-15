@@ -14,7 +14,6 @@ from app.models import User, Player, Match
 from app import app, db, jwt
 
 
-
 @app.route('/index')
 @app.route('/', defaults={'path': ''})
 @app.route('/<path:path>')
@@ -24,11 +23,18 @@ def index(path):
     else:
         return send_from_directory(app.static_folder, 'index.html')
 
+
 @app.route('/login', methods=['GET'])
 @jwt_required()
 def test():
     if flask.request.method == 'GET':
-        return json_response(status=200, data='this is a test')
+        return json_response(
+            id=current_user.id,
+            full_name=current_user.name,
+            username=current_user.email,
+            status=200
+        )
+
 
 @app.route('/login', methods=['POST'])
 def login():
@@ -39,11 +45,32 @@ def login():
         if user is None or not user.check_password(data['password']):
             return json_response(status=500, data="Invalid login credentials")
         else:
+            response = jsonify({"msg: login successful"})
             access_token = create_access_token(identity=user)
-            print('first', access_token)
-            print('second', jsonify(access_token=access_token))
-            print('third', json_response(status=200, access_token=access_token))
-            return json_response(status=200, access_token=access_token)
+            set_access_cookies(response, access_token)
+            return response
+
+
+@app.after_request
+def refresh_expiring_jwts(response):
+    try:
+        exp_timestamp = get_jwt()["exp"]
+        now = datetime.now(timezone.utc)
+        target_timestamp = datetime.timestamp(now + timedelta(minutes=30))
+        if target_timestamp > exp_timestamp:
+            access_token = create_access_token(identity=get_jwt_identity())
+            set_access_cookies(response, access_token)
+        return response
+    except (RuntimeError, KeyError):
+        # Case where there is not a valid JWT. Just return the original respone
+        return response
+
+
+@app.route('/logout')
+def logout():
+    response = jsonify({"msg": "logout successful"})
+    unset_jwt_cookies(response)
+    return response
 
 
 @app.route('/register', methods=['POST'])
@@ -88,7 +115,6 @@ def add_match():
     db.session.add(new_match)
     db.session.commit()
     return json_response(status=200, data=data)
-
 
 
 @app.route("/who_am_i", methods=["GET"])
