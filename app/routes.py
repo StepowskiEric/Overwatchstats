@@ -24,18 +24,26 @@ def index(path):
     else:
         return send_from_directory(app.static_folder, 'index.html')
 
-
+@app.route('/login', methods=['GET'])
+@jwt_required()
+def test():
+    if flask.request.method == 'GET':
+        return json_response(status=200, data='this is a test')
 
 @app.route('/login', methods=['POST'])
 def login():
-    data = json.loads(request.data)
-    email = data['email']
-    user = User.query.filter_by(email=email).first()
-    if user is None or not user.check_password(data['password']):
-        return json_response(status=500, data="Invalid login credentials")
-    else:
-        access_token = create_access_token(identity=user)
-        return jsonify(access_token=access_token), 401
+    if flask.request.method == 'POST':
+        data = json.loads(request.data)
+        email = data['email']
+        user = User.query.filter_by(email=email).first()
+        if user is None or not user.check_password(data['password']):
+            return json_response(status=500, data="Invalid login credentials")
+        else:
+            access_token = create_access_token(identity=user)
+            print('first', access_token)
+            print('second', jsonify(access_token=access_token))
+            print('third', json_response(status=200, access_token=access_token))
+            return json_response(status=200, access_token=access_token)
 
 
 @app.route('/register', methods=['POST'])
@@ -61,6 +69,7 @@ def register():
 
 # if you post to method it creates a player and get returns all players associated with the user
 @app.route('/player', methods=['GET', 'POST'])
+@jwt_required()
 def player():
     if flask.request.method == 'POST':
         data = json.loads(request.data)
