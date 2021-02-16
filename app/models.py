@@ -12,8 +12,9 @@ class User(UserMixin, db.Model):
     name = db.Column(db.String(64), unique=True)
     email = db.Column(db.String(120), index=True, unique=True)
     password_hash = db.Column(db.String(128))
-    players_on_acct = db.Column(db.String(64), db.ForeignKey('players.playername'))
-    players = db.relationship('Player', primaryjoin="User.name == Player.username", backref='users', lazy='joined')
+    players_on_acct = db.Column(db.String(64), db.ForeignKey('players.playername'), unique=True)
+    players = db.relationship('Player', foreign_keys=players_on_acct,
+                              backref='users', lazy='joined')
 
     def __repr__(self):
         return '<User {}>'.format(self.name)
@@ -34,7 +35,17 @@ class Match(db.Model):
     map = db.Column(db.String(70), index=True, unique=False)
     outcome = db.Column(db.String(30), index=True, unique=False)
     match_contains_players = db.Column(db.String(), db.ForeignKey('players.playername'))
+    user_name_match = db.Column(db.String(), db.ForeignKey('users.name'))
     created_at = db.Column(db.DateTime, default=datetime.datetime.utcnow())
+
+    def to_json(self):
+        return {
+            "map": self.map,
+            "outcome": self.outcome,
+            "match_contains_players": self.match_contains_players,
+            "user_name_match": self.user_name_match,
+            "created_at": self.created_at
+        }
 
 
 class Player(db.Model):
@@ -44,7 +55,7 @@ class Player(db.Model):
     role = db.Column(db.String(30))
     heroes = db.Column(db.String(35))
     username = db.Column(db.String(64), db.ForeignKey('users.name'))
-    players_in_match = db.relationship("Match")
+
 
     def to_json(self):
         return {

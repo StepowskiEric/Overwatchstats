@@ -92,7 +92,6 @@ def register():
             return json_response(status=200, data=data)
 
 
-# if you post to method it creates a player and get returns all players associated with the user
 @app.route('/player', methods=['GET', 'POST', 'UPDATE', 'DELETE'])
 # @jwt_required()
 def player():
@@ -100,16 +99,18 @@ def player():
         data = json.loads(request.data)
         user = User.query.filter_by(name=data['name']).first()
         new_player = Player(playername=data['playername'], role=data['role'], heroes=data['heroes'], username=user.name)
-        user = User(players_on_acct=data['playername'])
-        # db.session.add(user)
+
+        user.players.append(new_player)
         db.session.add(new_player)
+        db.session.commit()
+        user.players_on_acct = new_player.playername
         db.session.commit()
         return json_response(status=200, data=data)
 
     if flask.request.method == 'GET':
         data = json.loads(request.data)
         user = User.query.filter_by(name=data['name']).first()
-        if (user):
+        if user is not None:
             players = Player.query.all()
         for __dict__ in players:
             print(vars(__dict__))
@@ -135,13 +136,43 @@ def player():
             db.session.commit()
             return json_response(status=200, data="Deleted " + player.playername)
 
-@app.route('/addmatch', methods=['POST'])
+
+@app.route('/match', methods=['POST', 'GET', 'UPDATE', 'DELETE'])
 def add_match():
-    data = json.loads(request.data)
-    new_match = Match(map=data['map'], outcome=data['outcome'], match_contains_players=data['players'])
-    db.session.add(new_match)
-    db.session.commit()
-    return json_response(status=200, data=data)
+    if flask.request.method == 'POST':
+        data = json.loads(request.data)
+        user = User.query.filter_by(name=data['name']).first()
+        new_match = Match(map=data['map'], outcome=data['outcome'], match_contains_players=user.players_on_acct,
+                          user_name_match=user.name)
+        db.session.add(new_match)
+        db.session.commit()
+        return json_response(status=200, data=data)
+
+    if flask.request.method == 'GET':
+        data = json.loads(request.data)
+        user = User.query.filter_by(name=data['name']).first()
+        if user is not None:
+            matches = Match.query.all()
+            list_matches = [Match.to_json() for Match in matches]
+            return json_response(status=200, data=list_matches)
+
+    if flask.request.method == 'UPDATE':
+        data = json.loads(request.data)
+        match = Match.query.filter_by(user_name_match=data['user_match']).first()
+        match.map = data['mapupdated']
+        match.outcome = data['outcome']
+        match.match_contains_players = data['players_match']
+        db.session.commit()
+        return json_response(status=200, data=data)
+
+    if flask.request.method == 'DELETE':
+        data = json.loads(request.data)
+        match = Match.query.filter_by(user_name_match=data['user_match']).first()
+        if match is not None:
+            db.session.delete(match)
+            db.session.commit()
+            return json_response(status=200,
+                                 data="Deleted match with following details: " + match.id + " " + match.map + " " + match.outcome)
 
 
 @app.route("/who_am_i", methods=["GET"])
