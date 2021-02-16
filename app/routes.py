@@ -1,4 +1,4 @@
-import datetime
+from _datetime import datetime, timedelta, timezone
 import json
 import os
 
@@ -7,7 +7,7 @@ from flask import render_template, request, jsonify, send_from_directory
 from flask_json import json_response
 from flask_jwt_extended import (
     JWTManager, jwt_required, create_access_token,
-    get_jwt_identity, current_user
+    get_jwt_identity, current_user, get_jwt, set_access_cookies
 )
 
 from app.models import User, Player, Match
@@ -45,8 +45,8 @@ def login():
         if user is None or not user.check_password(data['password']):
             return json_response(status=500, data="Invalid login credentials")
         else:
-            response = jsonify({"msg: login successful"})
             access_token = create_access_token(identity=user)
+            response = jsonify({"msg: login successful " + access_token})
             set_access_cookies(response, access_token)
             return response
 
@@ -83,8 +83,6 @@ def register():
         user = User.query.filter_by(email=email).first()
         if data['email'] is None or data['password'] is None or data['name'] is None:
             return json_response(status=500, data="Please enter information in all fields")
-        if user:
-            return json_response(status=500, data="Email is already taken.")
         else:
             new_user = User(name=data['name'], email=data['email'],
                             password_hash=data['password'])
@@ -95,18 +93,47 @@ def register():
 
 
 # if you post to method it creates a player and get returns all players associated with the user
-@app.route('/player', methods=['GET', 'POST'])
-@jwt_required()
+@app.route('/player', methods=['GET', 'POST', 'UPDATE', 'DELETE'])
+# @jwt_required()
 def player():
     if flask.request.method == 'POST':
         data = json.loads(request.data)
         user = User.query.filter_by(name=data['name']).first()
         new_player = Player(playername=data['playername'], role=data['role'], heroes=data['heroes'], username=user.name)
-        # player_name = (data['playername'])
+        user = User(players_on_acct=data['playername'])
+        # db.session.add(user)
         db.session.add(new_player)
         db.session.commit()
         return json_response(status=200, data=data)
 
+    if flask.request.method == 'GET':
+        data = json.loads(request.data)
+        user = User.query.filter_by(name=data['name']).first()
+        if (user):
+            players = Player.query.all()
+        for __dict__ in players:
+            print(vars(__dict__))
+
+        playerz = [Player.to_json() for Player in players]
+        return json_response(status=200, data=playerz)
+        # return json_response(status=200, data=jsonString)
+
+    if flask.request.method == 'UPDATE':
+        data = json.loads(request.data)
+        player = Player.query.filter_by(playername=data['playername']).first()
+        player.playername = data['playernameupdated']
+        player.role = data['role']
+        player.heroes = data['heroes']
+        db.session.commit()
+        return json_response(status=200, data=data)
+
+    if flask.request.method == 'DELETE':
+        data = json.loads(request.data)
+        player = Player.query.filter_by(playername=data['playername']).first()
+        if player is not None:
+            db.session.delete(player)
+            db.session.commit()
+            return json_response(status=200, data="Deleted " + player.playername)
 
 @app.route('/addmatch', methods=['POST'])
 def add_match():

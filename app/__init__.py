@@ -6,6 +6,7 @@ from flask_bootstrap import Bootstrap
 from flask_jwt_extended import JWTManager
 from flask_sqlalchemy import SQLAlchemy
 from flask_bcrypt import Bcrypt
+from datetime import timedelta
 
 app = Flask(__name__, static_folder='../frontend/build')
 load_dotenv(verbose=True)

@@ -12,7 +12,8 @@ class User(UserMixin, db.Model):
     name = db.Column(db.String(64), unique=True)
     email = db.Column(db.String(120), index=True, unique=True)
     password_hash = db.Column(db.String(128))
-    playersnames = db.relationship('Player')
+    players_on_acct = db.Column(db.String(64), db.ForeignKey('players.playername'))
+    players = db.relationship('Player', primaryjoin="User.name == Player.username", backref='users', lazy='joined')
 
     def __repr__(self):
         return '<User {}>'.format(self.name)
@@ -25,6 +26,7 @@ class User(UserMixin, db.Model):
 
     def set_player(self, players):
         return self.players
+
 
 class Match(db.Model):
     __tablename__ = 'matches'
@@ -43,3 +45,11 @@ class Player(db.Model):
     heroes = db.Column(db.String(35))
     username = db.Column(db.String(64), db.ForeignKey('users.name'))
     players_in_match = db.relationship("Match")
+
+    def to_json(self):
+        return {
+            "playername": self.playername,
+            "role": self.role,
+            "heroes": self.heroes,
+            "username": self.username
+        }
