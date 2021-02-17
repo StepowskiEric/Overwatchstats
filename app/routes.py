@@ -17,6 +17,7 @@ from app import app, db, jwt
 @app.route('/index')
 @app.route('/', defaults={'path': ''})
 @app.route('/<path:path>')
+@cross_origin()
 def index(path):
     if path != "" and os.path.exists(app.static_folder + '/' + path):
         return send_from_directory(app.static_folder, path)
@@ -26,6 +27,7 @@ def index(path):
 
 @app.route('/login', methods=['GET'])
 @jwt_required()
+@cross_origin()
 def test():
     if flask.request.method == 'GET':
         return json_response(
@@ -37,6 +39,7 @@ def test():
 
 
 @app.route('/login', methods=['POST'])
+@cross_origin()
 def login():
     if flask.request.method == 'POST':
         data = json.loads(request.data)
@@ -67,6 +70,7 @@ def refresh_expiring_jwts(response):
 
 
 @app.route('/logout')
+@cross_origin()
 def logout():
     response = jsonify({"msg": "logout successful"})
     unset_jwt_cookies(response)
@@ -74,6 +78,7 @@ def logout():
 
 
 @app.route('/register', methods=['POST'])
+@cross_origin()
 def register():
     if flask.request.method == 'POST':
         data = json.loads(request.data)
@@ -93,6 +98,7 @@ def register():
 
 
 @app.route('/player', methods=['GET', 'POST', 'UPDATE', 'DELETE'])
+@cross_origin()
 # @jwt_required()
 def player():
     if flask.request.method == 'POST':
@@ -138,6 +144,7 @@ def player():
 
 
 @app.route('/match', methods=['POST', 'GET', 'UPDATE', 'DELETE'])
+@cross_origin()
 def add_match():
     if flask.request.method == 'POST':
         data = json.loads(request.data)

@@ -7,11 +7,12 @@ from flask_jwt_extended import JWTManager
 from flask_sqlalchemy import SQLAlchemy
 from flask_bcrypt import Bcrypt
 from datetime import timedelta
+from flask_cors import CORS, cross_origin
 
 app = Flask(__name__, static_folder='../frontend/build')
 load_dotenv(verbose=True)
 
-
+app.config['CORS_HEADERS'] = 'Content-Type'
 app.config["JWT_COOKIE_SECURE"] = False
 app.config["JWT_TOKEN_LOCATION"] = ["cookies"]
 app.config["JWT_ACCESS_TOKEN_EXPIRES"] = timedelta(hours=1)
@@ -22,6 +23,7 @@ jwt = JWTManager(app)
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['JSON_ADD_STATUS'] = False
 Bootstrap(app)
+cors = CORS(app)
 bcrypt = Bcrypt(app)
 json = FlaskJSON(app)
 db = SQLAlchemy(app)
