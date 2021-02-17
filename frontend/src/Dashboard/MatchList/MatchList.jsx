@@ -31,18 +31,32 @@ export default function MatchList() {
             outcome: 1,
             players: [
                 {
-                    name: 'dichi',
+                    name: 'Dichi',
+                    number: 11121,
                     role: 'tank',
                     heroes: [
                         'zarya',
-                        'roadhog'
+                        'roadhog',
+                        'dva',
+                        'orisa',
+                        'reinhardt'
                     ]
                 },
                 {
-                    name: 'jerry'
+                    name: 'jerry',
+                    role: 'support',
+                    heroes: [
+                        'ana',
+                        'baptiste'
+                    ]
                 },
                 {
-                    name: 'baba'
+                    name: 'baba',
+                    role: 'support',
+                    heroes: [
+                        'mercy',
+                        'moira'
+                    ]
                 }
             ],
             dateTime: ''
