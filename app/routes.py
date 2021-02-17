@@ -46,7 +46,7 @@ def login():
             return json_response(status=500, data="Invalid login credentials")
         else:
             access_token = create_access_token(identity=user)
-            response = json_response(access_token, data=data)
+            response = json_response(status=200, data=data)
             set_access_cookies(response, access_token)
             return response
 
