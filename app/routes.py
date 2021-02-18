@@ -11,7 +11,7 @@ from flask_jwt_extended import (
 )
 
 from app.models import User, Player, Match
-from app import app, db, jwt
+from app import app, db, jwt, cross_origin, cors
 
 
 @app.route('/index')
@@ -48,8 +48,14 @@ def login():
         if user is None or not user.check_password(data['password']):
             return json_response(status=500, data="Invalid login credentials")
         else:
+
             access_token = create_access_token(identity=user)
-            response = json_response(status=200, data=data)
+            players = db.session.query(Player).filter_by(username=user.name).all()
+            matches = db.session.query(Match).filter_by(user_name_match=user.name).all()
+            list_players = [Player.to_json() for Player in players]
+            list_matches = [Match.to_json() for Match in matches]
+
+            response = json_response(status=200, data={"players": list_players, "matches": list_matches})
             set_access_cookies(response, access_token)
             return response
 
@@ -89,6 +95,8 @@ def register():
         if data['email'] is None or data['password'] is None or data['name'] is None:
             return json_response(status=500, data="Please enter information in all fields")
         else:
+
+
             new_user = User(name=data['name'], email=data['email'],
                             password_hash=data['password'])
             new_user.set_password(data['password'])
@@ -103,19 +111,18 @@ def register():
 def player():
     if flask.request.method == 'POST':
         data = json.loads(request.data)
-        user = User.query.filter_by(name=data['name']).first()
-        new_player = Player(playername=data['playername'], role=data['role'], heroes=data['heroes'], username=user.name)
-
-        user.players.append(new_player)
+        user = User.query.filter_by(email=data['email']).first()
+        new_player = Player(playername=data['playername'], username=user.name)
         db.session.add(new_player)
         db.session.commit()
+        user.players.append(new_player)
         user.players_on_acct = new_player.playername
         db.session.commit()
         return json_response(status=200, data=data)
 
     if flask.request.method == 'GET':
         data = json.loads(request.data)
-        user = User.query.filter_by(name=data['name']).first()
+        user = User.query.filter_by(name=data['email']).first()
         if user is not None:
             players = Player.query.all()
         for __dict__ in players:

@@ -5,7 +5,7 @@ import { useAuth } from '../../context/auth'
 
 export default function LoginPage() {
     
-    const { register, logIn } = useAuth()
+    const { register, logIn, errorMsg, inputError } = useAuth()
     
     const [email, setEmail] = useState('')
     const [password, setPassword] = useState('')
@@ -33,10 +33,10 @@ export default function LoginPage() {
                     <Grid item>
                         <Grid container style={{maxWidth: '600px'}} justify='center' alignItems='center'>
                             <Grid item xs={12}>
-                                <TextField onChange={(e) => handleEmailInput(e.target.value)} value={email} label="Email" variant="outlined" style={{width: '100%'}}/>
+                                <TextField onChange={(e) => handleEmailInput(e.target.value)} error={inputError} value={email} label="Email" variant="outlined" style={{width: '100%'}}/>
                             </Grid>
                             <Grid item xs={12} style={{paddingTop: '12px'}}>
-                                <TextField onChange={(e) => handlePasswordInput(e.target.value)} value={password} label="Password" variant="outlined" style={{width: '100%'}} type='password'/>
+                                <TextField onChange={(e) => handlePasswordInput(e.target.value)} error={inputError} value={password} label="Password" variant="outlined" style={{width: '100%'}} type='password'/>
                             </Grid>
                             <Grid item xs={12} style={{paddingTop: '12px'}}>
                                 <Button variant='outlined' onClick={handleRegister} disabled={!email.length || !password.length}>Register</Button>
