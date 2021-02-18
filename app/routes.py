@@ -50,8 +50,10 @@ def login():
             return json_response(status=500, data="Invalid login credentials")
         else:
             access_token = create_access_token(identity=user)
-            players = db.session.query(Player).filter_by(username='test').all()
+            players = db.session.query(Player).filter_by(username=user.name).all()
+            matches = db.session.query(Match).filter_by(user_name_match=user.name).all()
             list_players = [Player.to_json() for Player in players]
+            list_matches = [Match.to_json() for Match in matches]
 
             response = json_response(status=200, data=list_players)
             set_access_cookies(response, access_token)

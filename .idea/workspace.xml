@@ -2,9 +2,11 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="da816542-7645-4d16-9e8f-f10f283aedd5" name="Default Changelist" comment="added all backend python">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/models.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/models.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/routes.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/routes.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/package-lock.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/Dashboard/MatchList/NewMatchDialog.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/Dashboard/MatchList/NewMatchDialog.jsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/components/Login/LoginPage.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/components/Login/LoginPage.jsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/context/auth.js" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/context/auth.js" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -346,7 +348,7 @@
       <workItem from="1613601009932" duration="3522000" />
       <workItem from="1613608096869" duration="3525000" />
       <workItem from="1613686950133" duration="209000" />
-      <workItem from="1613687606856" duration="1686000" />
+      <workItem from="1613687606856" duration="1890000" />
     </task>
     <task id="LOCAL-00001" summary="added all backend python">
       <created>1611171345470</created>
