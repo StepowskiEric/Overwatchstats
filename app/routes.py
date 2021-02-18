@@ -11,7 +11,8 @@ from flask_jwt_extended import (
 )
 
 from app.models import User, Player, Match
-from app import app, db, jwt
+from app import app, db, jwt, cors, cross_origin
+from sqlalchemy import select
 
 
 @app.route('/index')
@@ -49,7 +50,10 @@ def login():
             return json_response(status=500, data="Invalid login credentials")
         else:
             access_token = create_access_token(identity=user)
-            response = json_response(status=200, data=data)
+            players = db.session.query(Player).filter_by(username='test').all()
+            list_players = [Player.to_json() for Player in players]
+
+            response = json_response(status=200, data=list_players)
             set_access_cookies(response, access_token)
             return response
 
@@ -105,8 +109,6 @@ def player():
         data = json.loads(request.data)
         user = User.query.filter_by(name=data['name']).first()
         new_player = Player(playername=data['playername'], role=data['role'], heroes=data['heroes'], username=user.name)
-
-        user.players.append(new_player)
         db.session.add(new_player)
         db.session.commit()
         user.players_on_acct = new_player.playername
@@ -149,8 +151,9 @@ def add_match():
     if flask.request.method == 'POST':
         data = json.loads(request.data)
         user = User.query.filter_by(name=data['name']).first()
-        new_match = Match(map=data['map'], outcome=data['outcome'], match_contains_players=user.players_on_acct,
-                          user_name_match=user.name)
+        player = Player.query.filter_by(playername=data['playername']).first()
+        new_match = Match(map=data['map'], outcome=data['outcome'], user_name_match=user.name, match_contains_players=user.players_on_acct, match_contains_players_role = player.role,
+                          match_contains_players_heroes = player.heroes)
         db.session.add(new_match)
         db.session.commit()
         return json_response(status=200, data=data)

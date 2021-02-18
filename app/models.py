@@ -16,6 +16,15 @@ class User(UserMixin, db.Model):
     players = db.relationship('Player', foreign_keys=players_on_acct,
                               backref='users', lazy='joined')
 
+    def to_json(self):
+        return {
+            "name": self.map,
+            "email": self.outcome,
+            "password_hash": self.match_contains_players,
+            "players_on_account": self.user_name_match
+        }
+
+
     def __repr__(self):
         return '<User {}>'.format(self.name)
 
@@ -35,6 +44,8 @@ class Match(db.Model):
     map = db.Column(db.String(70), index=True, unique=False)
     outcome = db.Column(db.String(30), index=True, unique=False)
     match_contains_players = db.Column(db.String(), db.ForeignKey('players.playername'))
+    match_contains_players_role = db.Column(db.String())
+    match_contains_players_heroes = db.Column(db.String())
     user_name_match = db.Column(db.String(), db.ForeignKey('users.name'))
     created_at = db.Column(db.DateTime, default=datetime.datetime.utcnow())
 
