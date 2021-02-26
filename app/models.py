@@ -70,8 +70,6 @@ class Player(db.Model):
     def to_json(self):
         return {
             "playername": self.playername,
-            "role": self.role,
-            "heroes": self.heroes,
             "username": self.username
         }
 

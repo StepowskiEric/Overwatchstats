@@ -127,7 +127,9 @@ def player():
         db.session.commit()
         user.players_on_acct = new_player.playername
         db.session.commit()
-        return json_response(status=200, playername=new_player.playername)
+        players = Player.query.all()
+        playerz = [Player.to_json() for Player in players]
+        return json_response(status=200, players=playerz)
 
     if flask.request.method == 'GET':
         data = json.loads(request.data)
@@ -137,7 +139,7 @@ def player():
         else:
             players = Player.query.all()
             playerz = [Player.to_json() for Player in players]
-        return json_response(status=200, players_in_the_game=playerz)
+        return json_response(status=200, players_in_db=playerz)
 
     if flask.request.method == 'UPDATE':
         data = json.loads(request.data)
@@ -168,7 +170,7 @@ def player():
             return json_response(status=200, player_deleted="Deleted " + player.playername)
 
 
-@app.route('/match', methods=['POST', 'GET', 'UPDATE', 'DELETE'])
+@app.route('/match', methods=['POST', 'UPDATE', 'DELETE'])
 @cross_origin()
 def add_match():
     if flask.request.method == 'POST':
@@ -176,61 +178,22 @@ def add_match():
         user = User.query.filter_by(name=data['name']).first()
         if user is None:
             return json_response(status=500, error="Username does not exist")
-        # players = Player.query.filter_by(username=data['name']).all()
-        player = Player.query.filter_by(playername=data['playername']).first()
+        for x in data['players']:
+            player = Player.query.filter_by(playername=x['name']).first()
+            if player is None:
+                return json_response(status=500, error='player name ' + x['name'] + 'does not exist')
+
         new_match = Match(map=data['map'], outcome=data['outcome'], user_of_match=user.name)
         db.session.add(new_match)
         db.session.commit()
-        # list_players = [Player.to_json() for Player in players]
-        new_list = []
-        new_list2 = []
-        # for x in list_players:
-        if player is None:
-            return json_response(status=500, error='Player name does not exist')
-        new_match_players = playerMatch(match_id=new_match.id, playername=player.playername, username=user.name,
-                                        role=data['role'],
-                                        heroes=data['heroes'])
-        db.session.add(new_match_players)
-        db.session.commit()
+        for x in data['players']:
+            db.session.add(playerMatch(match_id=new_match.id, playername=x['name'], username=user.name,
+                                       role=x['role'],
+                                       heroes=x['heroes']))
+            db.session.commit()
         matches = Match.query.filter_by(user_of_match=user.name).all()
         list_matches = [Match.to_json() for Match in matches]
-        # for i in matches:
-
-        # player_matches = [playerMatch.query.filter_by(match_id=i.id).first()]
-        # matches_with_players = [Match.query.filter_by(user_of_match=user.name).first()]
-        # new_list.append(player_matches)
-        # new_list2.append(matches_with_players)
-
-        # test_dict = {'Matches': new_list2 + new_list}
-        return json_response(status=200, matches="match created")
-
-    if flask.request.method == 'GET':
-        data = json.loads(request.data)
-        list_of_matches = []
-        list3 = []
-        user = User.query.filter_by(name=data['name']).first()
-        if user is not None:
-            matches = Match.query.filter_by(user_of_match=user.name).all()
-            for x in matches:
-                player_matches = playerMatch.query.filter_by(match_id=x.id).all()
-                list_player_matches = [playerMatch.to_json() for playerMatch in player_matches]
-                match = Match(id=x.id, map=x.map, outcome=x.outcome, user_of_match=user.name)
-                match_to_json = match.to_json()
-                list_of_match_players = []
-                list_of_matches.append(match_to_json)
-                list_of_match_players.append(list_player_matches)
-
-                test_dict = {'Match': [{
-                    'created_at': x.created_at,
-                    'map': x.map,
-                    'outcome': x.outcome,
-                    'players_in_match': list_of_match_players,
-                    'user_of_match': user.name}],
-                    #'players_in_match': new_list
-                }
-                list3.append(test_dict)
-
-            return json_response(status=200, matches=list3)
+        return get_matches()
 
     if flask.request.method == 'UPDATE':
         data = json.loads(request.data)
@@ -249,6 +212,34 @@ def add_match():
             db.session.commit()
             return json_response(status=200,
                                  data="Deleted match with following details: " + match.id + " " + match.map + " " + match.outcome)
+
+
+@app.route('/match', methods=['GET'])
+def get_matches():
+    data = json.loads(request.data)
+    list_of_matches = []
+    list3 = []
+    user = User.query.filter_by(name=data['name']).first()
+    if user is not None:
+        matches = Match.query.filter_by(user_of_match=user.name).all()
+        for x in matches:
+            player_matches = playerMatch.query.filter_by(match_id=x.id).all()
+            list_player_matches = [playerMatch.to_json() for playerMatch in player_matches]
+            match = Match(id=x.id, map=x.map, outcome=x.outcome, user_of_match=user.name)
+            match_to_json = match.to_json()
+            list_of_match_players = []
+            list_of_matches.append(match_to_json)
+            list_of_match_players.append(list_player_matches)
+
+            test_dict = {'Match': [{
+                'created_at': x.created_at,
+                'map': x.map,
+                'outcome': x.outcome,
+                'players_in_match': list_of_match_players,
+                'user_of_match': user.name}],
+            }
+            list3.append(test_dict)
+        return json_response(status=200, matches=list3)
 
 
 @jwt.user_identity_loader
