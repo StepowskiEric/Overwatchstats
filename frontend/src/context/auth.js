@@ -78,7 +78,7 @@ const AuthContextProvider = ({ children }) => {
 
     const addPlayer = (playerName) => {
         axios.post('http://localhost:5000/player', {
-                email: authState.email,
+                name: authState.name,
                 password: authState.password,
                 playername: playerName
               })

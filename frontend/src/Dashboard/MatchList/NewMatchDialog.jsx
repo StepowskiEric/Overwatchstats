@@ -136,61 +136,89 @@ export default function NewMatchDialog({ cancel }) {
                                         </Select>
                                     </Grid>
                                     <Grid item style={{width: '100%'}} md={6} sm={6} xs={12} style={{paddingTop: '12px'}}>
-                                        <Typography>
-                                            Players
-                                        </Typography>
-                                        <Grid container>
-                                            <Grid item xs={3}>
-                                                <Select
-                                                    labelId="demo-simple-select-label"
-                                                    id="demo-simple-select"
-                                                    value={playerToAdd}
-                                                    onChange={(e) => choosePlayerToAdd(e.target.value)}
-                                                    style={{width: '100%'}}
-                                                >
-                                                    {
-                                                        players.map(player => {
-                                                            if (matchPlayers.filter(matchPlayer => matchPlayer.player.playername === player.playername).length) {
-                                                                return null
-                                                            }
-                                                            return (
-                                                                <MenuItem value={player.playername}>{player.playername}</MenuItem>
-                                                            )
-                                                        })
-                                                    }
-                                                </Select>
-                                            </Grid>
-                                            <Grid item xs={3}>
-                                                <Select
-                                                    labelId="demo-simple-select-label"
-                                                    id="demo-simple-select"
-                                                    value={roleToAdd}
-                                                    onChange={(e) => chooseRoleToAdd(e.target.value)}
-                                                    style={{width: '100%'}}
-                                                >
-                                                    <MenuItem value={'tank'}>Tank</MenuItem>
-                                                    <MenuItem value={'dps'}>DPS</MenuItem>
-                                                    <MenuItem value={'support'}>Support</MenuItem>
-                                                </Select>
-                                            </Grid>
-                                            <Grid item xs={3}>
+                                        {
+                                            <Card variant='outlined'>
+                                                <Box p={3}>
+                                                    <Grid container direction='row' justify='center' alignItems='center'>
+                                                        <Grid item xs={12} style={{textAlign: 'center'}}>
+                                                            <Typography>
+                                                                You haven't created any players to add to matches.
+                                                            </Typography>
+                                                        </Grid>
+                                                        <Grid item xs={12} style={{textAlign: 'center'}}>
+                                                            <Button
+                                                                color='primary'
+                                                                variant='outlined'
+                                                                onClick={() => setTabValue(0)}
+                                                            >
+                                                                <Add />
+                                                                Player
+                                                            </Button>
+                                                        </Grid>
+                                                    </Grid>
+                                                </Box>
+                                            </Card>
+                                            
+                                        }
+                                        {
+                                            players && players.length &&
+                                            <>
+                                                <Typography>
+                                                    Players
+                                                </Typography>
+                                                <Grid container>
+                                                    <Grid item xs={3}>
+                                                            <Select
+                                                            labelId="demo-simple-select-label"
+                                                            id="demo-simple-select"
+                                                            value={playerToAdd}
+                                                            onChange={(e) => choosePlayerToAdd(e.target.value)}
+                                                            style={{width: '100%'}}
+                                                            >
+                                                                {
+                                                                    players && players.length && players.map(player => {
+                                                                        if (matchPlayers.filter(matchPlayer => matchPlayer.player.playername === player.playername).length) {
+                                                                            return null
+                                                                        }
+                                                                        return (
+                                                                            <MenuItem value={player.playername}>{player.playername}</MenuItem>
+                                                                        )
+                                                                    })
+                                                                }
+                                                            </Select>
+                                                    </Grid>
+                                                    <Grid item xs={3}>
+                                                        <Select
+                                                            labelId="demo-simple-select-label"
+                                                            id="demo-simple-select"
+                                                            value={roleToAdd}
+                                                            onChange={(e) => chooseRoleToAdd(e.target.value)}
+                                                            style={{width: '100%'}}
+                                                        >
+                                                            <MenuItem value={'tank'}>Tank</MenuItem>
+                                                            <MenuItem value={'dps'}>DPS</MenuItem>
+                                                            <MenuItem value={'support'}>Support</MenuItem>
+                                                        </Select>
+                                                    </Grid>
+                                                    <Grid item xs={3}>
 
-                                            </Grid>
-                                            <Grid item xs={3}>
-                                                <Button
-                                                    color='primary'
-                                                    variant='outlined'
-                                                    onClick={() => addMatchPlayer()}
-                                                >
-                                                    <Add />
-                                                    Player
-                                                </Button>
-                                            </Grid>
-                                        </Grid>
-                                        
+                                                    </Grid>
+                                                    <Grid item xs={3}>
+                                                        <Button
+                                                            color='primary'
+                                                            variant='outlined'
+                                                            onClick={() => addMatchPlayer()}
+                                                        >
+                                                            <Add />
+                                                            Player
+                                                        </Button>
+                                                    </Grid>
+                                                </Grid>
+                                            </>
+                                        }
                                         <Grid container>
                                             {
-                                                matchPlayers.length && matchPlayers.map(matchPlayer => {
+                                                !!matchPlayers.length && matchPlayers.map(matchPlayer => {
                                                     return (
                                                         <Grid item>
                                                             <Card elevation={6}>
