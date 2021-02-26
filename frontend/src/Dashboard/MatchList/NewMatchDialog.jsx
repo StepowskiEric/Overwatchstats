@@ -1,8 +1,9 @@
 import React, { useState } from 'react'
-import { Box, Card, CardActions, CardContent, Button, Paper, Tabs, Tab, Grid, TextField, Select, InputLabel, MenuItem, Typography, List, ListItem, CardHeader } from '@material-ui/core'
+import { Box, Card, CardActions, CardContent, Button, Paper, Tabs, Tab, Grid, TextField, Select, InputLabel, MenuItem, Typography, List, ListItem, CardHeader, Avatar } from '@material-ui/core'
 import AddIcon from '@material-ui/icons/Add'
 import { Add } from '@material-ui/icons'
 import { useAuth } from '../../context/auth'
+import { heroNames, heroPictures, sounds, icons } from '../../components/data'
 
 export default function NewMatchDialog({ cancel }) {
 
@@ -14,21 +15,24 @@ export default function NewMatchDialog({ cancel }) {
     const [outcome, setOutcome] = useState('')
     const [matchPlayers, setMatchPlayers] = useState([])
 
-    const [playerToAdd, setPlayerToAdd] = useState({})
+    const [playerToAdd, setPlayerToAdd] = useState(false)
     const [roleToAdd, setRoleToAdd] = useState('')
-    
+    console.log(players)
     console.log(matchPlayers)
     const addMatchPlayer = () => {
-        let array = matchPlayers
-        array.push({player: players.filter(player => player.playername === playerToAdd)[0], role: roleToAdd})
-        setMatchPlayers([...array])
-        setPlayerToAdd({})
-        setRoleToAdd('')
+        if (playerToAdd) {
+            let array = matchPlayers
+            array.push({player: players.filter(player => player.playername === playerToAdd)[0], role: roleToAdd, heroes: []})
+            setMatchPlayers([...array])
+            setPlayerToAdd(false)
+            setRoleToAdd('')
+        }
     }
 
     const choosePlayerToAdd = (player) => {
         setPlayerToAdd(player)
     }
+
 
     const chooseRoleToAdd = (role) => {
         setRoleToAdd(role)
@@ -47,6 +51,11 @@ export default function NewMatchDialog({ cancel }) {
 
         }
     }
+
+    const addHeroToPlayer = (player, hero) => {
+
+    }
+
 
     return (
         <Box pb={2}>
@@ -181,40 +190,54 @@ export default function NewMatchDialog({ cancel }) {
                                         
                                         <Grid container>
                                             {
-                                                matchPlayers.map(matchPlayer => {/*
+                                                matchPlayers.length && matchPlayers.map(matchPlayer => {
                                                     return (
-                                                        <Card elevation={6}>
-                                                            <CardHeader style={{backGroundColor: 'grey'}} title={<Typography style={{textTransform: 'capitalize'}}>{player.name}</Typography>} avatar={<div style={{height: '28px'}}>{icons[player.role]}</div>}/>
-                                                            <CardContent>
-                                                                <Grid container>
-                                                                    {
-                                                                        player.heroes && player.heroes.map((hero, index) => {
-                                                                            if (index > 0) {
-                                                                                return (
-                                                                                    <Grid item>
-                                                                                        <Avatar src={heroPictures[hero]} style={{cursor: 'pointer'}} onClick={() => {
-                                                                                                let sound = new Audio(Array.isArray(sounds[hero]) ? sounds[hero][0] : sounds[hero])
-                                                                                                sound.play()
-                                                                                                console.log('this is a test')
-                                                                                            }}
-                                                                                        />
-                                                                                    </Grid>
-                                                                                )
-                                                                            }
-                                                                        })
-                                                                    }
-                                                                </Grid>
-                                                            </CardContent>
-                                                            <CardActions>
-                                                                <Grid container direction='row-reverse'>
-                                                                    <Grid item>
-                                                                        <Button color='primary' variant='contained'>View</Button>
+                                                        <Grid item>
+                                                            <Card elevation={6}>
+                                                                <CardHeader style={{backGroundColor: 'grey'}} title={<Typography style={{textTransform: 'capitalize'}}>{matchPlayer.player.playername}</Typography>} avatar={<div style={{height: '28px'}}>{icons[matchPlayer.role]}</div>}/>
+                                                                <CardContent>
+                                                                    <Grid container>
+                                                                        {
+                                                                            matchPlayer.heroes.length > 0 && matchPlayer.heroes.map(hero => {
+                                                                                    return (
+                                                                                        <Grid item>
+                                                                                            <Avatar src={heroPictures[hero]} style={{cursor: 'pointer'}} onClick={() => {
+                                                                                                    let sound = new Audio(Array.isArray(sounds[hero]) ? sounds[hero][0] : sounds[hero])
+                                                                                                    sound.play()
+                                                                                                    console.log('this is a test')
+                                                                                                }}
+                                                                                            />
+                                                                                        </Grid>
+                                                                                    )
+                                                                            })
+                                                                        }
                                                                     </Grid>
-                                                                </Grid>
-                                                            </CardActions>
-                                                        </Card>
+                                                                    <Select
+                                                                        labelId="demo-simple-select-label"
+                                                                        id="demo-simple-select"
+                                                                        value={roleToAdd}
+                                                                        onChange={(e) => addHeroToPlayer(e.target.value)}
+                                                                        style={{width: '100%'}}
+                                                                    >
+                                                                        {
+                                                                            
+                                                                        }
+                                                                        <MenuItem value={'tank'}>Tank</MenuItem>
+                                                                        <MenuItem value={'dps'}>DPS</MenuItem>
+                                                                        <MenuItem value={'support'}>Support</MenuItem>
+                                                                    </Select>
+                                                                </CardContent>
+                                                                <CardActions>
+                                                                    <Grid container direction='row-reverse'>
+                                                                        <Grid item>
+                                                                            <Button color='primary' variant='contained'>View</Button>
+                                                                        </Grid>
+                                                                    </Grid>
+                                                                </CardActions>
+                                                            </Card>
+                                                        </Grid>
                                                     )
-                                                                */})
+                                                })
                                             }
                                         </Grid>
                                     </Grid>
