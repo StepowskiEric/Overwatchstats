@@ -44,6 +44,8 @@ def test():
 def login():
     if flask.request.method == 'POST':
         data = json.loads(request.data)
+        if 'email' or 'password' not in data:
+            return json_response(status=500, error='JSON email or password not found')
         email = data['email']
         user = User.query.filter_by(email=email).first()
         if user is None or not user.check_password(data['password']):
@@ -88,10 +90,17 @@ def logout():
 def register():
     if flask.request.method == 'POST':
         data = json.loads(request.data)
-        if 'email' not in data or 'password' not in data or 'password' not in data:
+        if 'email' not in data or 'name' not in data or 'password' not in data:
             return json_response(status_=500, data="Incorrect JSON entered")
         email = data['email']
-        user = User.query.filter_by(email=email).first()
+        name = data['name']
+        ##NOTE IF EMAIL AND USERNAME ARE DIFFERENT BUT THATS WHATS ENTERED, IT WILL CAUSE AN ERROR! need to fix
+        username = User.query.filter_by(name=name).first()
+        useremail = User.query.filter_by(email=email, name=name).first()
+        if username is not None:
+            return json_response(status=500, error='Username already exists')
+        if useremail is not None:
+            return json_response(status=500, error="email already exists.")
         if data['email'] is None or data['password'] is None or data['name'] is None:
             return json_response(status=500, data="Please enter information in all fields")
         else:
@@ -100,7 +109,7 @@ def register():
             new_user.set_password(data['password'])
             db.session.add(new_user)
             db.session.commit()
-            return json_response(status=200, data=data)
+            return json_response(status=200, email=new_user.email, username=new_user.name)
 
 
 @app.route('/player', methods=['GET', 'POST', 'UPDATE', 'DELETE'])
@@ -113,21 +122,24 @@ def player():
         player = Player.query.filter_by(playername=data['playername']).first()
         if player is not None:
             return json_response(status=500, error='Player with that name already exists')
-        new_player = Player(playername=data['playername'], role=data['role'], heroes=data['heroes'], username=user.name)
+        new_player = Player(playername=data['playername'], username=user.name)
         db.session.add(new_player)
         db.session.commit()
         user.players_on_acct = new_player.playername
         db.session.commit()
-        return json_response(status=200, data=data)
+        players = Player.query.all()
+        playerz = [Player.to_json() for Player in players]
+        return json_response(status=200, players=playerz)
 
     if flask.request.method == 'GET':
         data = json.loads(request.data)
         user = User.query.filter_by(name=data['name']).first()
-        if user is not None:
+        if user is None:
+            return json_response(status=500, error='Username was not found')
+        else:
             players = Player.query.all()
-
-        playerz = [Player.to_json() for Player in players]
-        return json_response(status=200, data=playerz)
+            playerz = [Player.to_json() for Player in players]
+        return json_response(status=200, players_in_db=playerz)
 
     if flask.request.method == 'UPDATE':
         data = json.loads(request.data)
@@ -158,39 +170,30 @@ def player():
             return json_response(status=200, player_deleted="Deleted " + player.playername)
 
 
-@app.route('/match', methods=['POST', 'GET', 'UPDATE', 'DELETE'])
+@app.route('/match', methods=['POST', 'UPDATE', 'DELETE'])
 @cross_origin()
 def add_match():
     if flask.request.method == 'POST':
         data = json.loads(request.data)
         user = User.query.filter_by(name=data['name']).first()
         if user is None:
-            return json_response(status=500,error="Username does not exist")
-        players = Player.query.filter_by(username=data['name']).all()
-        player = Player.query.filter_by(playername=data['playername']).first()
+            return json_response(status=500, error="Username does not exist")
+        for x in data['players']:
+            player = Player.query.filter_by(playername=x['name']).first()
+            if player is None:
+                return json_response(status=500, error='player name ' + x['name'] + 'does not exist')
+
         new_match = Match(map=data['map'], outcome=data['outcome'], user_of_match=user.name)
         db.session.add(new_match)
         db.session.commit()
-        list_players = [Player.to_json() for Player in players]
-        for x in list_players:
-            new_match_players = playerMatch(match_id=new_match.id, playername=player.playername, role=data['role'],
-                                            heroes=data['heroes'])
-            db.session.add(new_match_players)
+        for x in data['players']:
+            db.session.add(playerMatch(match_id=new_match.id, playername=x['name'], username=user.name,
+                                       role=x['role'],
+                                       heroes=x['heroes']))
             db.session.commit()
-        return json_response(status=200, match_created=list_players)
-
-    if flask.request.method == 'GET':
-        data = json.loads(request.data)
-        user = User.query.filter_by(name=data['name']).first()
-        if user is not None:
-            matches = Match.query.filter_by(user_of_match=user.name).all()
-            list_matches = [Match.to_json() for Match in matches]
-            new_list = []
-            for x in matches:
-                player_matches = playerMatch.query.filter_by(match_id=x.id).all()
-                list_player_matches = [playerMatch.to_json() for playerMatch in player_matches]
-                new_list.append(list_player_matches)
-            return json_response(status=200, matches=list_matches, players_in_match=new_list)
+        matches = Match.query.filter_by(user_of_match=user.name).all()
+        list_matches = [Match.to_json() for Match in matches]
+        return get_matches()
 
     if flask.request.method == 'UPDATE':
         data = json.loads(request.data)
@@ -211,15 +214,32 @@ def add_match():
                                  data="Deleted match with following details: " + match.id + " " + match.map + " " + match.outcome)
 
 
-@app.route("/who_am_i", methods=["GET"])
-@jwt_required()
-def protected():
-    # We can now access our sqlalchemy User object via `current_user`.
-    return jsonify(
-        id=current_user.id,
-        full_name=current_user.name,
-        username=current_user.email,
-    )
+@app.route('/match', methods=['GET'])
+def get_matches():
+    data = json.loads(request.data)
+    list_of_matches = []
+    list3 = []
+    user = User.query.filter_by(name=data['name']).first()
+    if user is not None:
+        matches = Match.query.filter_by(user_of_match=user.name).all()
+        for x in matches:
+            player_matches = playerMatch.query.filter_by(match_id=x.id).all()
+            list_player_matches = [playerMatch.to_json() for playerMatch in player_matches]
+            match = Match(id=x.id, map=x.map, outcome=x.outcome, user_of_match=user.name)
+            match_to_json = match.to_json()
+            list_of_match_players = []
+            list_of_matches.append(match_to_json)
+            list_of_match_players.append(list_player_matches)
+
+            test_dict = {'Match': [{
+                'created_at': x.created_at,
+                'map': x.map,
+                'outcome': x.outcome,
+                'players_in_match': list_of_match_players,
+                'user_of_match': user.name}],
+            }
+            list3.append(test_dict)
+        return json_response(status=200, matches=list3)
 
 
 @jwt.user_identity_loader
