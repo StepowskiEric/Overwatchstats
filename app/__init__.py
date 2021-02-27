@@ -20,6 +20,7 @@ app.config['SECRET_KEY'] = os.getenv("SECRET_KEY")
 app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv('SQLALCHEMY_DATABASE_URI')
 app.config['JWT_SECRET_KEY'] = os.getenv("SECRET_JWT_KEY")
 jwt = JWTManager(app)
+app.config['JSON_DATETIME_FORMAT'] = '%m/%d/%Y %H:%M:%S'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['JSON_ADD_STATUS'] = False
 Bootstrap(app)

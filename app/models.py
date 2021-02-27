@@ -4,6 +4,8 @@ from werkzeug.security import generate_password_hash, check_password_hash
 from wtforms import ValidationError
 import datetime
 from app import db, jwt
+from sqlalchemy.ext.declarative import DeclarativeMeta
+import json
 
 
 class User(UserMixin, db.Model):
@@ -53,6 +55,9 @@ class Match(db.Model):
             "created_at": self.created_at
         }
 
+    def as_dict(self):
+        return {c.name: getattr(self, c.name) for c in self.__table__.columns}
+
 
 class Player(db.Model):
     __tablename__ = 'players'
@@ -65,8 +70,6 @@ class Player(db.Model):
     def to_json(self):
         return {
             "playername": self.playername,
-            "role": self.role,
-            "heroes": self.heroes,
             "username": self.username
         }
 
@@ -76,13 +79,17 @@ class playerMatch(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     match_id = db.Column(db.Integer, db.ForeignKey('matches.id'))
     playername = db.Column(db.String(), db.ForeignKey('players.playername'))
+    username = db.Column(db.String(), db.ForeignKey('users.name'))
     role = db.Column(db.String())
     heroes = db.Column(db.String())
 
     def to_json(self):
         return {
             "playername": self.playername,
+            "username": self.username,
             "role": self.role,
-            "heroes": self.heroes,
-
+            "heroes": self.heroes
         }
+
+
+
