@@ -2,8 +2,8 @@ import React, { useState } from 'react'
 import { Button, Grid, Box, Switch, Typography, FormGroup, FormControlLabel } from '@material-ui/core'
 import AddIcon from '@material-ui/icons/Add'
 
-import MatchListItem from './MatchListItem'
-import NewMatchDialog from './NewMatchDialog'
+import MatchListItem from './Components/MatchListItem'
+import NewMatchDialog from './Components/NewMatchDialog/index'
 
 import { useAuth } from '../../context/auth'
 import { useTheme } from '../../context/theme'

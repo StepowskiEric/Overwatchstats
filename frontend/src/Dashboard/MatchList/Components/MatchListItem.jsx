@@ -5,7 +5,7 @@ import ExpandMoreIcon from '@material-ui/icons/ExpandMore'
 import CheckCircleIcon from '@material-ui/icons/CheckCircle'
 import HighlightOffIcon from '@material-ui/icons/HighlightOff'
 import CodeIcon from '@material-ui/icons/Code'
-import { heroNames, heroPictures, mapPictures, sounds, icons } from '../../components/data'
+import { heroNames, heroPictures, mapPictures, sounds, icons } from '../../../components/data'
 
 export default function MatchListItem({ match, index, expanded, handleChange, disableBackground }) {
 
