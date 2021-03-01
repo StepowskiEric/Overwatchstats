@@ -100,7 +100,7 @@ def register():
         if data['email'] is None or data['password'] is None:
             return json_response(status=500, data="Please enter information in all fields")
         else:
-            new_user = User(name='name', email=data['email'],
+            new_user = User(email=data['email'],
                             password_hash=data['password'])
             new_user.set_password(data['password'])
             db.session.add(new_user)

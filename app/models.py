@@ -11,7 +11,6 @@ import json
 class User(UserMixin, db.Model):
     __tablename__ = 'users'
     id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(64), unique=True)
     email = db.Column(db.String(120), index=True, unique=True)
     password_hash = db.Column(db.String(128))
     players_on_acct = db.Column(db.String(64), db.ForeignKey('players.playername'), unique=True)
@@ -20,7 +19,6 @@ class User(UserMixin, db.Model):
 
     def to_json(self):
         return {
-            "name": self.map,
             "email": self.outcome,
             "password_hash": self.match_contains_players,
             "players_on_account": self.user_name_match
