@@ -44,7 +44,7 @@ def test():
 def login():
     if flask.request.method == 'POST':
         data = json.loads(request.data)
-        if 'email' or 'password' not in data:
+        if 'email' not in data or 'password' not in data:
             return json_response(status=500, error='JSON email or password not found')
         email = data['email']
         user = User.query.filter_by(email=email).first()
@@ -52,12 +52,12 @@ def login():
             return json_response(status=500, error="Invalid login credentials")
         else:
             access_token = create_access_token(identity=user)
-            players = db.session.query(Player).filter_by(username=user.name).all()
-            matches = db.session.query(Match).filter_by(user_of_match=user.name).all()
+            players = db.session.query(Player).filter_by(useremail=user.email).all()
+            matches = db.session.query(Match).filter_by(user_of_match=user.email).all()
             list_players = [Player.to_json() for Player in players]
             list_matches = [Match.to_json() for Match in matches]
 
-            response = json_response(status=200, player_list=list_players)
+            response = json_response(status=200, player_list=list_players, match_list=list_matches)
             set_access_cookies(response, access_token)
             return response
 
@@ -90,26 +90,22 @@ def logout():
 def register():
     if flask.request.method == 'POST':
         data = json.loads(request.data)
-        if 'email' not in data or 'name' not in data or 'password' not in data:
+        if 'email' not in data or 'password' not in data:
             return json_response(status_=500, data="Incorrect JSON entered")
         email = data['email']
-        name = data['name']
         ##NOTE IF EMAIL AND USERNAME ARE DIFFERENT BUT THATS WHATS ENTERED, IT WILL CAUSE AN ERROR! need to fix
-        username = User.query.filter_by(name=name).first()
-        useremail = User.query.filter_by(email=email, name=name).first()
-        if username is not None:
-            return json_response(status=500, error='Username already exists')
+        useremail = User.query.filter_by(email=email).first()
         if useremail is not None:
             return json_response(status=500, error="email already exists.")
-        if data['email'] is None or data['password'] is None or data['name'] is None:
+        if data['email'] is None or data['password'] is None:
             return json_response(status=500, data="Please enter information in all fields")
         else:
-            new_user = User(name=data['name'], email=data['email'],
+            new_user = User(email=data['email'],
                             password_hash=data['password'])
             new_user.set_password(data['password'])
             db.session.add(new_user)
             db.session.commit()
-            return json_response(status=200, email=new_user.email, username=new_user.name)
+            return json_response(status=200, email=new_user.email)
 
 
 @app.route('/player', methods=['GET', 'POST', 'UPDATE', 'DELETE'])
@@ -118,28 +114,36 @@ def register():
 def player():
     if flask.request.method == 'POST':
         data = json.loads(request.data)
-        user = User.query.filter_by(name=data['name']).first()
+        user = User.query.filter_by(email=data['email']).first()
         player = Player.query.filter_by(playername=data['playername']).first()
         if player is not None:
             return json_response(status=500, error='Player with that name already exists')
-        new_player = Player(playername=data['playername'], username=user.name)
+        new_player = Player(playername=data['playername'], useremail=user.email)
         db.session.add(new_player)
         db.session.commit()
         user.players_on_acct = new_player.playername
         db.session.commit()
         players = Player.query.all()
-        playerz = [Player.to_json() for Player in players]
-        return json_response(status=200, players=playerz)
+        list_of_players = []
+        for player in players:
+            if player.useremail == data['email']:
+                list_of_players.append(player.to_json())
+
+        return json_response(status=200, players=list_of_players)
 
     if flask.request.method == 'GET':
         data = json.loads(request.data)
-        user = User.query.filter_by(name=data['name']).first()
+        user = User.query.filter_by(email=data['email']).first()
         if user is None:
             return json_response(status=500, error='Username was not found')
-        else:
-            players = Player.query.all()
-            playerz = [Player.to_json() for Player in players]
-        return json_response(status=200, players_in_db=playerz)
+
+        players = Player.query.all()
+        list_of_players = []
+        for player in players:
+            if player.useremail == data['email']:
+                list_of_players.append(player.to_json())
+
+        return json_response(status=200, players=list_of_players)
 
     if flask.request.method == 'UPDATE':
         data = json.loads(request.data)
@@ -175,25 +179,26 @@ def player():
 def add_match():
     if flask.request.method == 'POST':
         data = json.loads(request.data)
-        user = User.query.filter_by(name=data['name']).first()
+        user = User.query.filter_by(email=data['email']).first()
         if user is None:
-            return json_response(status=500, error="Username does not exist")
+            return json_response(status=500, error="Email does not exist")
         for x in data['players']:
             player = Player.query.filter_by(playername=x['name']).first()
             if player is None:
                 return json_response(status=500, error='player name ' + x['name'] + 'does not exist')
 
-        new_match = Match(map=data['map'], outcome=data['outcome'], user_of_match=user.name)
+        new_match = Match(map=data['map'], outcome=data['outcome'], user_of_match=user.email)
         db.session.add(new_match)
         db.session.commit()
         for x in data['players']:
-            db.session.add(playerMatch(match_id=new_match.id, playername=x['name'], username=user.name,
+            db.session.add(playerMatch(match_id=new_match.id, playername=x['name'], useremail=user.email,
                                        role=x['role'],
                                        heroes=x['heroes']))
             db.session.commit()
-        matches = Match.query.filter_by(user_of_match=user.name).all()
+        matches = Match.query.filter_by(user_of_match=user.email).all()
         list_matches = [Match.to_json() for Match in matches]
-        return get_matches()
+        return json_response(status=200, matches=list_matches)
+        #return get_matches()
 
     if flask.request.method == 'UPDATE':
         data = json.loads(request.data)
@@ -219,13 +224,13 @@ def get_matches():
     data = json.loads(request.data)
     list_of_matches = []
     list3 = []
-    user = User.query.filter_by(name=data['name']).first()
+    user = User.query.filter_by(email=data['email']).first()
     if user is not None:
-        matches = Match.query.filter_by(user_of_match=user.name).all()
+        matches = Match.query.filter_by(user_of_match=user.email).all()
         for x in matches:
             player_matches = playerMatch.query.filter_by(match_id=x.id).all()
             list_player_matches = [playerMatch.to_json() for playerMatch in player_matches]
-            match = Match(id=x.id, map=x.map, outcome=x.outcome, user_of_match=user.name)
+            match = Match(id=x.id, map=x.map, outcome=x.outcome, user_of_match=user.email)
             match_to_json = match.to_json()
             list_of_match_players = []
             list_of_matches.append(match_to_json)
@@ -236,7 +241,7 @@ def get_matches():
                 'map': x.map,
                 'outcome': x.outcome,
                 'players_in_match': list_of_match_players,
-                'user_of_match': user.name}],
+                'user_of_match': user.email}],
             }
             list3.append(test_dict)
         return json_response(status=200, matches=list3)

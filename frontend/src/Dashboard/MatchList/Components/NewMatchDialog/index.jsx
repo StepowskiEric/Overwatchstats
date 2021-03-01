@@ -72,6 +72,7 @@ export default function NewMatchDialog({ cancel }) {
                             <Tab label="Match"/>
                         </Tabs>
                         <Grid container direction='column'>
+                            <Card style={{padding: '16px'}} variant='outlined'>
                             {
                                 tabValue === 0 ?
                                 <>
@@ -271,6 +272,7 @@ export default function NewMatchDialog({ cancel }) {
                                     </Grid>
                                 </>
                             }
+                            </Card>
                         </Grid>
                 </CardContent>
                 <CardActions>

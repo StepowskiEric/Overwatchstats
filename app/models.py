@@ -11,7 +11,6 @@ import json
 class User(UserMixin, db.Model):
     __tablename__ = 'users'
     id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(64), unique=True)
     email = db.Column(db.String(120), index=True, unique=True)
     password_hash = db.Column(db.String(128))
     players_on_acct = db.Column(db.String(64), db.ForeignKey('players.playername'), unique=True)
@@ -20,7 +19,6 @@ class User(UserMixin, db.Model):
 
     def to_json(self):
         return {
-            "name": self.map,
             "email": self.outcome,
             "password_hash": self.match_contains_players,
             "players_on_account": self.user_name_match
@@ -44,7 +42,7 @@ class Match(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     map = db.Column(db.String(70), index=True, unique=False)
     outcome = db.Column(db.String(30), index=True, unique=False)
-    user_of_match = db.Column(db.String(), db.ForeignKey('users.name'))
+    user_of_match = db.Column(db.String(), db.ForeignKey('users.email'))
     created_at = db.Column(db.DateTime, default=datetime.datetime.utcnow())
 
     def to_json(self):
@@ -65,12 +63,12 @@ class Player(db.Model):
     playername = db.Column(db.String(30), unique=True, nullable=False)
     role = db.Column(db.String(30))
     heroes = db.Column(db.String(35))
-    username = db.Column(db.String(64), db.ForeignKey('users.name'))
+    useremail = db.Column(db.String(64), db.ForeignKey('users.email'))
 
     def to_json(self):
         return {
             "playername": self.playername,
-            "username": self.username
+            "useremail": self.useremail
         }
 
 
@@ -79,14 +77,14 @@ class playerMatch(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     match_id = db.Column(db.Integer, db.ForeignKey('matches.id'))
     playername = db.Column(db.String(), db.ForeignKey('players.playername'))
-    username = db.Column(db.String(), db.ForeignKey('users.name'))
+    useremail = db.Column(db.String(), db.ForeignKey('users.email'))
     role = db.Column(db.String())
     heroes = db.Column(db.String())
 
     def to_json(self):
         return {
             "playername": self.playername,
-            "username": self.username,
+            "useremail": self.useremail,
             "role": self.role,
             "heroes": self.heroes
         }

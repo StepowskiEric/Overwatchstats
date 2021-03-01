@@ -14,7 +14,7 @@ export default function MatchListItem({ match, index, expanded, handleChange, di
             <AccordionSummary expandIcon={<ExpandMoreIcon />} style={{backgroundColor: 'rgba(190, 190, 190, 0.8)'}}>
                 <Grid container justify='space-between'>
                     <Grid item xs={4}>
-                        <Typography variant='h6' style={{textTransform: 'capitalize', color: match.outcome === 0 ? 'red' : match.outcome === 1 ? 'green' : 'darkOrange'}}>{match.map}</Typography>
+                        <Typography variant='h6' style={{textTransform: 'capitalize', fontFamily: 'Big Noodle Too,impact,sans-serif', fontStyle: 'italic', fontWeight: '400', color: 'white'}}>{match.map}</Typography>
                     </Grid>
                     <Grid item xs={4}>
                         {
