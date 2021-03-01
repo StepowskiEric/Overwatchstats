@@ -55,10 +55,19 @@ const AuthContextProvider = ({ children }) => {
                     newAuth.isLoggedIn = true
                     newAuth.email = email
                     newAuth.password = password
-                    newAuth.matches = response.data.data.matches
-                    newAuth.players = response.data.data.players
-                    setAuthState({...newAuth})
+                    newAuth.players = response.data.player_list
                   }
+              })
+              .then(() => {
+                  axios.get('http://localhost:5000/match', {
+                    email,
+                    password
+                  })
+                  .then((res) => {
+                    newAuth.matches = res.data.matches
+                    setAuthState({...newAuth})
+                  })
+                  console.log(newAuth)
               })
               .catch(function (error) {
                 console.log(error)

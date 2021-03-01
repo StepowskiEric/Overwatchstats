@@ -182,22 +182,41 @@ def add_match():
         user = User.query.filter_by(email=data['email']).first()
         if user is None:
             return json_response(status=500, error="Email does not exist")
-        for x in data['players']:
-            player = Player.query.filter_by(playername=x['name']).first()
-            if player is None:
-                return json_response(status=500, error='player name ' + x['name'] + 'does not exist')
+        if len(data['players']) > 0:
+            for x in data['players']:
+                player = Player.query.filter_by(playername=x['name']).first()
+                if player is None:
+                    return json_response(status=500, error='player name ' + x['name'] + 'does not exist')
 
-        new_match = Match(map=data['map'], outcome=data['outcome'], user_of_match=user.email)
-        db.session.add(new_match)
-        db.session.commit()
-        for x in data['players']:
-            db.session.add(playerMatch(match_id=new_match.id, playername=x['name'], useremail=user.email,
-                                       role=x['role'],
-                                       heroes=x['heroes']))
+            new_match = Match(map=data['map'], outcome=data['outcome'], user_of_match=user.email)
+            db.session.add(new_match)
             db.session.commit()
+            for x in data['players']:
+                db.session.add(playerMatch(match_id=new_match.id, playername=x['name'], useremail=user.email,
+                                        role=x['role'],
+                                        heroes=x['heroes']))
+                db.session.commit()
+        list3 = []
+        list_of_matches = []
         matches = Match.query.filter_by(user_of_match=user.email).all()
-        list_matches = [Match.to_json() for Match in matches]
-        return json_response(status=200, matches=list_matches)
+        for x in matches:
+            player_matches = playerMatch.query.filter_by(match_id=x.id).all()
+            list_player_matches = [playerMatch.to_json() for playerMatch in player_matches]
+            match = Match(id=x.id, map=x.map, outcome=x.outcome, user_of_match=user.email)
+            match_to_json = match.to_json()
+            list_of_match_players = []
+            list_of_matches.append(match_to_json)
+            list_of_match_players.append(list_player_matches)
+
+            test_dict = {'Match': [{
+                'created_at': x.created_at,
+                'map': x.map,
+                'outcome': x.outcome,
+                'players_in_match': list_of_match_players,
+                'user_of_match': user.email}],
+            }
+            list3.append(test_dict)
+        return json_response(status=200, matches=list3)
         #return get_matches()
 
     if flask.request.method == 'UPDATE':
