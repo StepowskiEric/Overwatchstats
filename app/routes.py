@@ -33,8 +33,7 @@ def test():
     if flask.request.method == 'GET':
         return json_response(
             id=current_user.id,
-            full_name=current_user.name,
-            username=current_user.email,
+            email=current_user.email,
             status=200
         )
 
